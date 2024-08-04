@@ -51,6 +51,15 @@ class DBStorage:
                     new_dict[key] = obj
         return (new_dict)
 
+    def count(self, cls=None):
+        """Returns the number of objects in storage matching the given class.
+        If no class is passed, returns the count of all objects in storage."""
+        count = 0
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                count += self.__session.query(classes[clss]).count()
+        return (count)
+
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
@@ -58,6 +67,10 @@ class DBStorage:
     def save(self):
         """commit all changes of the current database session"""
         self.__session.commit()
+
+    def get(self, cls, id):
+        """get a single object or None"""
+        return (self.__session.query(cls).filter(cls.id == id).first())
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""

@@ -18,6 +18,8 @@ import json
 import os
 import pep8
 import unittest
+import uuid
+
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -79,6 +81,14 @@ class TestFileStorage(unittest.TestCase):
         self.assertIs(new_dict, storage._FileStorage__objects)
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count_returns_int(self):
+        """Test that count returns an integer"""
+        storage = FileStorage()
+        count = storage.count()
+        self.assertEqual(type(count), int)
+        self.assertGreaterEqual(count, 1)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_new(self):
         """test that new adds an object to the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -113,3 +123,10 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_get_returns_none(self):
+        """Test that get returns a None"""
+        storage = FileStorage()
+        obj = storage.get(User, str(uuid.uuid4()))
+        self.assertIsNone(obj)
