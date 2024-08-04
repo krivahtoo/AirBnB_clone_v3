@@ -18,6 +18,7 @@ import json
 import os
 import pep8
 import unittest
+import uuid
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -76,13 +77,45 @@ class TestFileStorage(unittest.TestCase):
         self.assertIs(type(models.storage.all()), dict)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count_returns_int(self):
+        """Test that count returns an integer"""
+        count = models.storage.count()
+        self.assertEqual(type(count), int)
+        self.assertGreaterEqual(count, 0)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
+        user = User(
+            email="test@mail.com",
+            password="pass",
+            first_name="John",
+            last_name="Doe"
+        )
+        models.storage.new(user)
+        obj = models.storage.get(User, user.id)
+        self.assertIsNotNone(obj)
+        self.assertEqual(user, obj)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+        user = User(
+            email="test@mail.com",
+            password="pass",
+            first_name="John",
+            last_name="Doe"
+        )
+        models.storage.new(user)
+        res = models.storage.save()
+        self.assertIsNone(res)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get_returns_none(self):
+        """Test that get returns an none"""
+        obj = models.storage.get(User, str(uuid.uuid4()))
+        self.assertIsNone(obj)
