@@ -31,7 +31,7 @@ def not_found(error):
 @app.errorhandler(400)
 def bad_request(error):
     """Handler for 400 errors that returns a JSON-formatted response"""
-    return jsonify({"error": error.description }), 400
+    return jsonify({"error": error.description}), 400
 
 
 if __name__ == "__main__":
