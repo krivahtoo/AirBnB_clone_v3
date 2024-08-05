@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """
+Base api endpoints
 """
 
 from flask import jsonify
